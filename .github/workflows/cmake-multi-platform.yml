@@ -13,30 +13,17 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      
-    - name: Install Chocolatey (Windows Package Manager)
-      run: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force; `
-        [System.Net.ServicePointManager]::SecurityProtocol = `
-        [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
-        iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-
-    - name: Install yq
-      run: choco install yq -y
-    
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version-file: windows/pubspec.yaml
-
+        channel: stable
+        flutter-version: 3.19.0
     - name: Initialize Flutter
       run: |
         flutter doctor
         flutter --version
-
     - name: Install Flutter dependencies
       run: flutter pub get
-
     - name: Enable Windows support
       run: flutter config --enable-windows-desktop
 
