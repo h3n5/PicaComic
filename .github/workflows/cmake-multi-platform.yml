@@ -7,40 +7,39 @@ on:
   pull_request:
 
 jobs:
-  build-windows:
-    name: Build Flutter Windows Package
+  build:
     runs-on: windows-latest
 
     steps:
-      # Checkout the repository
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      # Set up Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: stable
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 'stable'
 
-      # Verify Flutter installation
-      - name: Flutter Doctor
-        run: flutter doctor
+    - name: Initialize Flutter
+      run: |
+        flutter doctor
+        flutter --version
 
-      # Install dependencies
-      - name: Install Dependencies
-        run: flutter pub get
+    - name: Install Flutter dependencies
+      run: flutter pub get
 
-      # Enable Windows support if not already enabled
-      - name: Enable Windows Support
-        run: flutter config --enable-windows-desktop
+    - name: Enable Windows support
+      run: flutter config --enable-windows-desktop
 
-      # Build the Windows package
-      - name: Build Windows Package
-        run: flutter build windows
+    - name: Build Windows application
+      run: flutter build windows
 
-      # Upload the build output as an artifact
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows-package
-          path: build/windows/runner/Release
+    - name: Package Windows application
+      run: |
+        cd windows
+        iscc build.iss
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-package
+        path: build/windows/runner/Release/
