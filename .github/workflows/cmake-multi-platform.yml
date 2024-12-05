@@ -17,7 +17,7 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         channel: stable
-        flutter-version: 3.24.5
+        flutter-version: 3.24.0
     - name: Initialize Flutter
       run: |
         flutter doctor
@@ -26,14 +26,18 @@ jobs:
       run: flutter pub get
     - name: Enable Windows support
       run: flutter config --enable-windows-desktop
-
-    - name: Build Windows application
-      run: flutter build windows
-
-    - name: Package Windows application
-      run: |
-        cd windows
-        iscc build.iss
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.13
+    - name: Run Windows Build Script
+      run: python windows/build_windows.py
+    # - name: Build Windows application
+    #   run: flutter build windows
+    # - name: Package Windows application
+    #   run: |
+    #     cd windows
+    #     iscc build.iss
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
