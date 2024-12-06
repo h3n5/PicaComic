@@ -13,17 +13,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    # - name: Install Windows SDK
-    #   run: choco install windows-sdk-10.0 -y
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
         architecture: x64
-    # - name: Initialize Flutter
-    #   run: |
-    #     flutter doctor
-    #     flutter --version
     - name: Install Flutter dependencies
       run: flutter pub get
     - name: Enable Windows support
@@ -34,15 +28,9 @@ jobs:
         python-version: 3.13
     - name: Run Windows Build Script
       run: python3 windows/build_windows.py
-    # - name: Build Windows application
-    #   run: flutter build windows
-    # - name: Package Windows application
-    #   run: |
-    #     cd windows
-    #     iscc build.iss
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: windows-package
-        path: build/windows/x64/runner/Release
+        path: build/windows/
