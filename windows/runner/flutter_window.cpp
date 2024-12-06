@@ -12,6 +12,10 @@
 #include <Windows.h>
 #include <winbase.h>
 #define _CRT_SECURE_NO_WARNINGS
+#ifndef DWMWA_CAPTION_COLOR
+#define DWMWA_CAPTION_COLOR 19 // Define it manually if not available
+#endif
+
 
 std::unique_ptr<flutter::EventSink<flutter::EncodableValue>>&& mouseEvents = nullptr;
 
