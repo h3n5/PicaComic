@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -28,9 +27,14 @@ jobs:
         python-version: 3.13
     - name: Run Windows Build Script
       run: python3 windows/build_windows.py
-
+      
+    - name: Extract Version from pubspec.yaml
+      run: |
+        # Extract the version from pubspec.yaml
+        VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | sed 's/+.*//')
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: windows-package
-        path: build/windows/
+        path: build/windows/PicaComic-${{ env.VERSION }}-windows-installer.exe
