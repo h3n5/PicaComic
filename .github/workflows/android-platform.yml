@@ -1,0 +1,51 @@
+# This workflow builds the Android application.
+
+name: Android Build
+
+on:
+  push:
+    branches: [ master ] # Trigger on push to the master branch
+  pull_request:
+    branches: [ master ] # Trigger on pull requests to the master branch
+
+jobs:
+  build:
+    # Run on the latest version of Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Set up the Java Development Kit (JDK)
+    # Android projects require JDK to build
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin' # Recommended distribution
+        java-version: '17'      # Specify the Java version required by the project
+
+    # Grant execute permission to the Gradle wrapper script
+    # This is necessary to run Gradle commands
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # Build the debug APK
+    # This command executes the 'assembleDebug' task using the Gradle wrapper
+    # You can change 'assembleDebug' to 'assembleRelease' to build a release APK,
+    # but you would typically need to handle signing separately for release builds.
+    # For a Flutter project, this command run from the root will build the Android app.
+    - name: Build debug APK
+      run: ./gradlew assembleDebug
+
+    # Upload the generated APK as a workflow artifact
+    # This makes the APK available for download from the GitHub Actions run page
+    # The path is updated to reflect the typical location of the APK in a Flutter project
+    # where the Android code is in the 'android' subdirectory.
+    - name: Upload debug APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: pica-comic-debug-apk # Name of the artifact
+        path: android/app/build/outputs/apk/debug/app-debug.apk # Corrected path to the generated APK file
+        # Double-check the actual path after a successful local build if this path is incorrect.
