@@ -23,7 +23,7 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.x' # Specify a Flutter version range or a specific version
+        flutter-version: 'stable'
 
     # Get Flutter dependencies
     # This command fetches all the packages required by the Flutter project
