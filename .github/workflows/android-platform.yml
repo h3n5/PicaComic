@@ -37,11 +37,14 @@ jobs:
       # The pubspec.lock file indicates flutter: ">=3.24.0".
       # We are using 3.24.0 here for consistency.
       # Explicitly setting NDK version 21.4.7075529 (NDK r21e) which bundles CMake 3.10.2.
+      # Setting sdk-component-manager: false to force direct NDK download,
+      # ensuring CMake 3.10.2 is correctly located within the NDK bundle.
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.0' # Aligned with pubspec.lock (flutter: ">=3.24.0")
           ndk-version: '21.4.7075529' # NDK r21e, includes CMake 3.10.2
+          sdk-component-manager: false # Force direct NDK download for better CMake discovery
 
       # Step 4: Cache Flutter dependencies
       # This step speeds up builds by caching dependencies based on the pubspec.lock file.
