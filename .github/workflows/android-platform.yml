@@ -26,6 +26,11 @@ jobs:
         with:
           flutter-version: '3.24.0'  # Specify the Flutter version if needed
           channel: 'stable'
+          
+      - name: Install Android SDK CMake
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "cmake;3.22.1" "ndk;25.1.8937393"
 
       - name: Install Dependencies
         run: flutter pub get
