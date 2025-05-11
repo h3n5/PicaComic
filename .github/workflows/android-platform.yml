@@ -42,9 +42,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0' # Aligned with pubspec.lock (flutter: ">=3.24.0")
-          ndk-version: '21.4.7075529' # NDK r21e, includes CMake 3.10.2
-          sdk-component-manager: false # Force direct NDK download for better CMake discovery
+          channel: '3.24.0' # Aligned with pubspec.lock (flutter: ">=3.24.0")
 
       # Step 4: Get Flutter dependencies
       # This command fetches dependencies. It respects the pubspec.lock file
