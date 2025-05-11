@@ -33,15 +33,16 @@ jobs:
           java-version: '17'
 
       # Step 3: Set up Flutter SDK
-      # Using channel: 'stable' to get the latest stable Flutter SDK.
-      # This will include a recent Dart SDK version (e.g., >=3.3.1)
-      # required by dependencies like flutter_reorderable_grid_view 5.0.1.
+      # Using a specific Flutter version based on pubspec.lock constraints.
+      # The pubspec.lock file indicates flutter: ">=3.24.0".
+      # We are using 3.24.0 here for consistency.
+      # This also means Dart SDK ">=3.5.0" will be used, as per pubspec.lock.
       # Note: This may lead to compilation errors if the app's code
       # uses APIs deprecated or changed in newer Flutter versions.
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' 
+          flutter-version: '3.24.0' # Aligned with pubspec.lock (flutter: ">=3.24.0")
 
       # Step 4: Cache Flutter dependencies
       # This step speeds up builds by caching dependencies based on the pubspec.lock file.
