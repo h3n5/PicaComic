@@ -46,25 +46,13 @@ jobs:
           ndk-version: '21.4.7075529' # NDK r21e, includes CMake 3.10.2
           sdk-component-manager: false # Force direct NDK download for better CMake discovery
 
-      # Step 4: Cache Flutter dependencies
-      # This step speeds up builds by caching dependencies based on the pubspec.lock file.
-      - name: Cache Flutter dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pub-cache
-            .dart_tool
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
-
-      # Step 5: Get Flutter dependencies
+      # Step 4: Get Flutter dependencies
       # This command fetches dependencies. It respects the pubspec.lock file
       # to ensure consistent dependency versions.
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      # Step 6: Build Flutter APK (debug mode)
+      # Step 5: Build Flutter APK (debug mode)
       # This command builds a debug APK.
       # The output APK will be located at build/app/outputs/flutter-apk/app-debug.apk
       - name: Build Debug APK
@@ -72,12 +60,12 @@ jobs:
         # To provide build number and version (less common for debug builds but possible):
         # run: flutter build apk --debug --build-name=${{ github.run_number }} --build-number=${{ github.run_number }}
 
-      # Step 7: Rename the Debug APK (optional, for better artifact identification)
+      # Step 6: Rename the Debug APK (optional, for better artifact identification)
       # This makes the downloaded artifact name more descriptive.
       - name: Rename Debug APK
         run: mv build/app/outputs/flutter-apk/app-debug.apk PicaComic-debug.apk
 
-      # Step 8: Upload Debug APK artifact
+      # Step 7: Upload Debug APK artifact
       # This step uploads the built debug APK as an artifact, which you can download from the workflow run page.
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
