@@ -1,3 +1,4 @@
+# .github/workflows/android_build.yml
 
 name: Build PicaComic Android Package
 
@@ -22,7 +23,10 @@ jobs:
           submodules: 'recursive' # Important for projects with submodules like PicaComic
 
       # Step 2: Set up Java Development Kit (JDK)
-      # Flutter Android builds require Java. JDK 17 is a common choice.
+      # Flutter Android builds require Java. JDK 17 is used here.
+      # While PicaComic's AGP (7.2.0) officially recommends JDK 11,
+      # it often works with JDK 17. If issues arise with AGP/JDK compatibility,
+      # this might need to be changed to '11'.
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -30,14 +34,12 @@ jobs:
           java-version: '17'
 
       # Step 3: Set up Flutter SDK
-      # This action downloads and installs the Flutter SDK.
-      # Using 'stable' channel will get the latest stable Flutter version.
-      # You can specify a version like '3.19.0' if needed:
-      # flutter-version: '3.19.0'
+      # Pinning to a specific version (e.g., 3.3.10) known to be compatible
+      # with older projects or plugins that might use deprecated APIs.
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' # Or 'beta', 'dev', 'master', or a specific version
+          flutter-version: '3.3.10' # Pinned version for compatibility
 
       # Step 4: Get Flutter dependencies
       - name: Get Flutter dependencies
