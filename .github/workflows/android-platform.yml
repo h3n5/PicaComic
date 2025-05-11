@@ -32,17 +32,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # Step 3: Set up Flutter SDK
+      # Step 3: Set up Flutter SDK and specific NDK version
       # Using a specific Flutter version based on pubspec.lock constraints.
       # The pubspec.lock file indicates flutter: ">=3.24.0".
       # We are using 3.24.0 here for consistency.
-      # This also means Dart SDK ">=3.5.0" will be used, as per pubspec.lock.
-      # Note: This may lead to compilation errors if the app's code
-      # uses APIs deprecated or changed in newer Flutter versions.
+      # Explicitly setting NDK version 21.4.7075529 (NDK r21e) which bundles CMake 3.10.2.
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.0' # Aligned with pubspec.lock (flutter: ">=3.24.0")
+          ndk-version: '21.4.7075529' # NDK r21e, includes CMake 3.10.2
 
       # Step 4: Cache Flutter dependencies
       # This step speeds up builds by caching dependencies based on the pubspec.lock file.
