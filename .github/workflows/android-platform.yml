@@ -1,74 +1,63 @@
-# .github/workflows/android_build.yml
+name: Build Android Debug APK (Manual)
 
-name: Build PicaComic Android Package
-
-# Controls when the workflow will run
+# Allows you to run this workflow manually from the Actions tab
 on:
-  # Triggers the workflow on push events but only for the master branch
-  push:
-    branches: [ master ]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  build_android:
-    name: Build Android APK
+  build_android_debug:
+    name: Build Flutter Android Debug APK
     runs-on: ubuntu-latest # Use the latest Ubuntu runner
 
     steps:
-      # Step 1: Check out the repository code, including submodules
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: 'recursive' # Important for projects with submodules like PicaComic
+        uses: actions/checkout@v4 # Checks out your repository's code
 
-      # Step 2: Set up Java Development Kit (JDK)
-      # Flutter Android builds require Java. JDK 17 is used here.
-      # PicaComic's AGP version (7.2.0 in android/build.gradle) officially recommends JDK 11.
-      # While JDK 17 often works, if Gradle errors occur, changing this to '11' might be necessary.
-      - name: Set up JDK 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: 'temurin' # Adoptium Temurin is a good open-source JDK
+          java-version: '11'     # Flutter generally works well with JDK 11 or 17.
+                                 # PicaComic's existing workflow uses 11, so let's stick with that for compatibility.
 
-      # Step 3: Set up Flutter SDK and specific NDK version
-      # Using a specific Flutter version based on pubspec.lock constraints.
-      # The pubspec.lock file indicates flutter: ">=3.24.0".
-      # We are using 3.24.0 here for consistency.
-      # Explicitly setting NDK version 21.4.7075529 (NDK r21e) which bundles CMake 3.10.2.
-      # Setting sdk-component-manager: false to force direct NDK download,
-      # ensuring CMake 3.10.2 is correctly located within the NDK bundle.
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2 # Popular action to set up Flutter
         with:
-          channel: stable
-          flutter-version: '3.24.0' # Aligned with pubspec.lock (flutter: ">=3.24.0")
+          channel: 'stable'     # Use the stable channel of Flutter
+          flutter-version: '3.24.0' # Optional: Pin to a specific Flutter version if needed
+          cache: true             # Enable caching for Flutter SDK and dependencies
 
-      # Step 4: Get Flutter dependencies
-      # This command fetches dependencies. It respects the pubspec.lock file
-      # to ensure consistent dependency versions.
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      # Step 5: Build Flutter APK (debug mode)
-      # This command builds a debug APK.
-      # The output APK will be located at build/app/outputs/flutter-apk/app-debug.apk
-      - name: Build Debug APK
+      - name: (Optional) Display Flutter version and project info
+        run: |
+          flutter --version
+          flutter doctor -v
+
+      # The PicaComic project seems to generate native symbols.
+      # If you want to build exactly like their CI and get symbols:
+      # - name: Build APK with debug symbols (matches PicaComic CI)
+      #   run: flutter build apk --debug --split-debug-info=build/app/outputs/symbols
+
+      # Standard debug build without explicit symbol splitting:
+      - name: Build Android Debug APK
         run: flutter build apk --debug
-        # To provide build number and version (less common for debug builds but possible):
-        # run: flutter build apk --debug --build-name=${{ github.run_number }} --build-number=${{ github.run_number }}
 
-      # Step 6: Rename the Debug APK (optional, for better artifact identification)
-      # This makes the downloaded artifact name more descriptive.
-      - name: Rename Debug APK
-        run: mv build/app/outputs/flutter-apk/app-debug.apk PicaComic-debug.apk
-
-      # Step 7: Upload Debug APK artifact
-      # This step uploads the built debug APK as an artifact, which you can download from the workflow run page.
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PicaComic-debug-apk # Name of the artifact bundle in GitHub
-          path: PicaComic-debug.apk # Path to the file to upload
+          name: debug-apk # Name of the artifact that will be downloadable
+          path: build/app/outputs/flutter-apk/app-debug.apk # Path to the generated APK
           if-no-files-found: error # Fail the workflow if the APK is not found
+          retention-days: 7 # How long to keep the artifact (optional, default is 90)
+
+      # If you used the --split-debug-info option above, you'd also upload symbols:
+      # - name: Upload Debug Symbols Artifact
+      #   if: success() # Only run if the build was successful
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: debug-symbols
+      #     path: build/app/outputs/symbols/
+      #     if-no-files-found: error
+      #     retention-days: 7
