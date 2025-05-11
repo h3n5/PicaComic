@@ -23,7 +23,12 @@ jobs:
           distribution: 'temurin' # Adoptium Temurin is a good open-source JDK
           java-version: '17'     # Flutter generally works well with JDK 11 or 17.
                                  # PicaComic's existing workflow uses 11, so let's stick with that for compatibility.
-
+      - name: set ndk
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r23b # They use r23b
+          
       - name: Set up Flutter
         uses: subosito/flutter-action@v2 # Popular action to set up Flutter
         with:
