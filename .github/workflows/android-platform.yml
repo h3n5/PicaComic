@@ -33,13 +33,15 @@ jobs:
           java-version: '17'
 
       # Step 3: Set up Flutter SDK
-      # Using Flutter 3.19.1. This version includes Dart SDK 3.3.1, which is required by
-      # the flutter_reorderable_grid_view 5.0.1 dependency (needs Dart SDK >=3.3.1).
-      # This is an attempt to find a version compatible with PicaComic's older API usage.
+      # Using channel: 'stable' to get the latest stable Flutter SDK.
+      # This will include a recent Dart SDK version (e.g., >=3.3.1)
+      # required by dependencies like flutter_reorderable_grid_view 5.0.1.
+      # Note: This may lead to compilation errors if the app's code
+      # uses APIs deprecated or changed in newer Flutter versions.
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.1' # Includes Dart SDK 3.3.1
+          channel: 'stable' 
 
       # Step 4: Get Flutter dependencies
       - name: Get Flutter dependencies
