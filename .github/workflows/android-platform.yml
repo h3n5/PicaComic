@@ -1,47 +1,66 @@
-# This workflow builds the Android application using Flutter.
 
-name: Android Build (Flutter)
+name: Build PicaComic Android Package
 
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push events but only for the master branch
   push:
-    branches: [ master ] # Trigger on push to the master branch
-  pull_request:
-    branches: [ master ] # Trigger on pull requests to the master branch
+    branches: [ master ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  build:
-    # Run on the latest version of Windows
-    runs-on: windows-latest
+  build_android:
+    name: Build Android APK
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
 
     steps:
-    # Checkout the code from the repository
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # Step 1: Check out the repository code, including submodules
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive' # Important for projects with submodules like PicaComic
 
-    # Set up the Flutter environment
-    # Using channel and architecture for more explicit Flutter version setup
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: 'stable'
-        architecture: x64
+      # Step 2: Set up Java Development Kit (JDK)
+      # Flutter Android builds require Java. JDK 17 is a common choice.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    # Get Flutter dependencies
-    # This command fetches all the packages required by the Flutter project
-    - name: Get Flutter dependencies
-      run: flutter pub get
+      # Step 3: Set up Flutter SDK
+      # This action downloads and installs the Flutter SDK.
+      # Using 'stable' channel will get the latest stable Flutter version.
+      # You can specify a version like '3.19.0' if needed:
+      # flutter-version: '3.19.0'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable' # Or 'beta', 'dev', 'master', or a specific version
 
-    # Build the Android debug APK using Flutter
-    # This command builds the APK for the Android platform
-    - name: Build debug APK
-      run: flutter build apk --debug
+      # Step 4: Get Flutter dependencies
+      - name: Get Flutter dependencies
+        run: flutter pub get
 
-    # Upload the generated APK as a workflow artifact
-    # This makes the APK available for download from the GitHub Actions run page
-    # The path reflects the standard output location for 'flutter build apk --debug'
-    - name: Upload debug APK artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: pica-comic-debug-apk # Name of the artifact
-        path: build/app/outputs/flutter-apk/app-debug.apk # Standard path for Flutter debug APK
-        # Double-check the actual path after a successful local build if this path is incorrect.
+      # Step 5: Build Flutter APK (debug mode)
+      # This command builds a debug APK.
+      # The output APK will be located at build/app/outputs/flutter-apk/app-debug.apk
+      - name: Build Debug APK
+        run: flutter build apk --debug
+        # To provide build number and version (less common for debug builds but possible):
+        # run: flutter build apk --debug --build-name=${{ github.run_number }} --build-number=${{ github.run_number }}
+
+      # Step 6: Rename the Debug APK (optional, for better artifact identification)
+      # This makes the downloaded artifact name more descriptive.
+      - name: Rename Debug APK
+        run: mv build/app/outputs/flutter-apk/app-debug.apk PicaComic-debug.apk
+
+      # Step 7: Upload Debug APK artifact
+      # This step uploads the built debug APK as an artifact, which you can download from the workflow run page.
+      - name: Upload Debug APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PicaComic-debug-apk # Name of the artifact bundle in GitHub
+          path: PicaComic-debug.apk # Path to the file to upload
+          if-no-files-found: error # Fail the workflow if the APK is not found
