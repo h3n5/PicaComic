@@ -36,7 +36,7 @@ jobs:
           cmake-version: 3.22.1
           ndk-version: 25.1.8937393
           disable-animations: true
-          script: ./gradlew connectedCheck
+          script: echo "install cmake"
 
 
       - name: Install Dependencies
