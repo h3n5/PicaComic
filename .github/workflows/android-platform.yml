@@ -1,52 +1,91 @@
-name: Android Debug Build
+# YAML Workflow for Building an Android Debug APK for a Flutter Project
+
+name: Build Flutter Android Debug APK
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master # Or your development branch
   pull_request:
-    branches: [ master ]
+    branches:
+      - master # Or your development branch
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
-  build:
+  build_android_apk:
     name: Build Android Debug APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Or macos-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Project Code
         uses: actions/checkout@v4
+        # This step checks out your repository's code.
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Set up Flutter
+      - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'  # Specify the Flutter version if needed
-          channel: 'stable'
-          
-      - name: Set up Android SDK
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
-          target: google_apis
-          arch: x86_64
-          cmake-version: 3.22.1
-          ndk-version: 25.1.8937393
-          disable-animations: true
-          script: echo "install cmake"
+          flutter-version: '3.24.0' # Specify your desired Flutter version.
+          channel: 'stable' # Or 'beta', 'dev', 'master'
+        # This action sets up the Flutter environment.
 
+      - name: Display Flutter version
+        run: flutter --version
+        # Verifies Flutter is installed correctly.
 
-      - name: Install Dependencies
+      - name: Verify Android SDK Setup (via flutter doctor)
+        run: flutter doctor
+        # Checks if the Android SDK and other dependencies are correctly set up for Flutter.
+
+      - name: Get Flutter Dependencies
         run: flutter pub get
+        # Fetches all the dependencies listed in pubspec.yaml.
 
-      - name: Build Debug APK
+      - name: Clean Flutter Project (Optional but Recommended)
+        run: flutter clean
+        # Cleans the build cache.
+
+      - name: Build Android Debug APK
         run: flutter build apk --debug
+        # This is the core command to build the debug APK.
+        # The --debug flag specifies a debug build.
 
-      - name: Upload APK Artifact
+      - name: Upload APK Artifact (Optional)
         uses: actions/upload-artifact@v4
         with:
-          name: PicaComic-Debug-APK
+          name: app-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error # Fails the workflow if the APK is not found
+        # This step uploads the generated APK as an artifact,
+        # making it available for download from the GitHub Actions run.
+
+      - name: Notify Build Status (Example - further setup required for actual notifications)
+        if: always() # Ensures this step runs even if previous steps fail
+        run: |
+          echo "Build status: ${{ job.status }}"
+          echo "APK (if successful) is available in artifacts or at build/app/outputs/flutter-apk/app-debug.apk"
+        # A simple notification step. For real notifications, integrate with services like Slack, email, etc.
+
+# General Information and Prerequisites (as comments, not executable):
+#
+# Prerequisites (to be ensured in the runner environment or by setup steps):
+#   1. Flutter SDK Installed: Handled by 'subosito/flutter-action'.
+#   2. Android Studio / Android SDK: Generally included in GitHub-hosted runners or needs to be set up.
+#      'flutter doctor' helps verify this.
+#   3. Project Code: Handled by 'actions/checkout'.
+#
+# Steps from the Markdown workflow mapped to this YAML:
+#   1. Navigate to Project Directory: Implicitly handled by the runner starting in the project root.
+#   2. Ensure Dependencies are Up-to-Date: 'flutter pub get' step.
+#   3. Check Connected Devices/Emulators: Not applicable for CI build; primarily for local development.
+#   4. Build the Debug APK: 'flutter build apk --debug' step.
+#   5. Locate the APK: Path is 'build/app/outputs/flutter-apk/app-debug.apk'. Uploaded as an artifact.
+#   6. Install the APK (Optional): Not typically done in CI for just building. For UI testing,
+#      you would add steps to run on an emulator/device.
+#
+# Important Notes:
+#   - Android Manifest & Gradle: Configurations in `android/app/src/main/AndroidManifest.xml`
+#     and `android/app/build.gradle` are used by the `flutter build` command.
+#   - Signing: Debug APKs are auto-signed with a debug key.
+#   - Build Flavors/Modes: If your project uses flavors, modify the build command:
+#     `flutter build apk --debug --flavor <flavorName>`
+#   - Troubleshooting: Check the logs from each step in the GitHub Actions run.
