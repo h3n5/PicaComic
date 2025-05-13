@@ -32,23 +32,9 @@ jobs:
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.3' # Specify your desired Flutter version.
+          flutter-version: '3.24.0' # Specify your desired Flutter version.
           channel: 'stable' # Or 'beta', 'dev', 'master'
         # This action sets up the Flutter environment.
-
-      - name: Display Flutter version
-        run: flutter --version
-        # Verifies Flutter is installed correctly.
-
-      - name: Display Java version
-        run: java -version
-        # Verifies Java version is correctly set.
-
-      - name: Verify Android SDK Setup (via flutter doctor)
-        run: flutter doctor -v
-        # Checks if the Android SDK and other dependencies are correctly set up for Flutter.
-        # Note: Android SDK setup might require specific attention on Windows runners.
-        # This will now use JDK 17 for its Android tooling checks.
         
       - name: Clean Flutter Project (Optional but Recommended)
         run: flutter clean
