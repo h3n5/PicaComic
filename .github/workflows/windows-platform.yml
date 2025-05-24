@@ -3,7 +3,7 @@ name: Build Windows Package
 on:
   push:
     branches:
-      - master1
+      - master
   pull_request:
 
 jobs:
