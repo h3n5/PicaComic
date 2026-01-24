@@ -12,6 +12,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      
+    - name: Enable Long Paths
+      run: |
+          git config --system core.longpaths true
+          reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d 1 /f
+  
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
