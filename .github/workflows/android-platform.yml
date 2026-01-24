@@ -5,10 +5,7 @@ name: Build Flutter Android Debug APK
 on:
   push:
     branches:
-      - master # Or your development branch
-  pull_request:
-    branches:
-      - master # Or your development branch
+      - master1 # Or your development branch
   workflow_dispatch: # Allows manual triggering
 
 jobs:
