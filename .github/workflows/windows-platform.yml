@@ -15,7 +15,8 @@ jobs:
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
-        channel: '3.19.3'
+        channel: 'stable'
+        flutter-version: 3.19.3
         architecture: x64
     - name: Install Flutter dependencies
       run: flutter pub get
