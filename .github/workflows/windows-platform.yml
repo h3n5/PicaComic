@@ -12,6 +12,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Setup MSBuild for VS 2019
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: '[16.0, 17.0)' # Targets VS 2019 (version 16.x)
       
     - name: Enable Long Paths
       run: |
