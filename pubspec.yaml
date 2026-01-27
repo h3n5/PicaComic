@@ -79,7 +79,7 @@ dependencies:
       ref: 92b7309e
   collection: ^1.18.0
   window_manager:
-  flutter_inappwebview: 6.0.0
+  flutter_inappwebview: 6.2.0-beta.3
   pdf: ^3.10.8
   flutter_qjs:
     git:
