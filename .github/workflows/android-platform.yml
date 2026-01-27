@@ -5,7 +5,7 @@ name: Build Flutter Android Debug APK
 on:
   push:
     branches:
-      - master1 # Or your development branch
+      - master # Or your development branch
   workflow_dispatch: # Allows manual triggering
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         # This step checks out your repository's code.
 
-      - name: Set up Java JDK 17
+      - name: Set up Java JDK 8
         uses: actions/setup-java@v4
         with:
           java-version: '8'
@@ -29,13 +29,9 @@ jobs:
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0' # Specify your desired Flutter version.
-          channel: 'stable' # Or 'beta', 'dev', 'master'
+          flutter-version: 3.24.5
+          channel: 'stable'
         # This action sets up the Flutter environment.
-        
-      - name: Clean Flutter Project (Optional but Recommended)
-        run: flutter clean
-        # Cleans the build cache.
         
       - name: Get Flutter Dependencies
         run: flutter pub get
@@ -61,35 +57,3 @@ jobs:
         run: |
           echo "Build status: ${{ job.status }}"
           echo "APK (if successful) is available in artifacts or at build/app/outputs/flutter-apk/app-debug.apk"
-        # A simple notification step. For real notifications, integrate with services like Slack, email, etc.
-
-# General Information and Prerequisites (as comments, not executable):
-#
-# Prerequisites (to be ensured in the runner environment or by setup steps):
-#   1. Java JDK 17: Handled by 'actions/setup-java'.
-#   2. Flutter SDK Installed: Handled by 'subosito/flutter-action'.
-#   3. Android Studio / Android SDK: Generally included in GitHub-hosted runners.
-#      For Windows runners, ensure the necessary Android SDK components (like build-tools, platform-tools, and platforms)
-#      are available or installed as part of your workflow if not pre-installed.
-#      'flutter doctor' helps verify this.
-#   4. Project Code: Handled by 'actions/checkout'.
-#
-# Steps from the Markdown workflow mapped to this YAML:
-#   1. Navigate to Project Directory: Implicitly handled by the runner starting in the project root.
-#   2. Ensure Dependencies are Up-to-Date: 'flutter pub get' step.
-#   3. Check Connected Devices/Emulators: Not applicable for CI build; primarily for local development.
-#   4. Build the Debug APK: 'flutter build apk --debug' step.
-#   5. Locate the APK: Path is 'build/app/outputs/flutter-apk/app-debug.apk'. Uploaded as an artifact.
-#   6. Install the APK (Optional): Not typically done in CI for just building. For UI testing,
-#      you would add steps to run on an emulator/device.
-#
-# Important Notes:
-#   - Android Manifest & Gradle: Configurations in `android/app/src/main/AndroidManifest.xml`
-#     and `android/app/build.gradle` are used by the `flutter build` command.
-#     Ensure your project's `android/build.gradle` specifies AGP 8.1.1 (or compatible)
-#     and `android/gradle/wrapper/gradle-wrapper.properties` specifies a compatible Gradle version (e.g., Gradle 8.0+).
-#   - Signing: Debug APKs are auto-signed with a debug key.
-#   - Build Flavors/Modes: If your project uses flavors, modify the build command:
-#     `flutter build apk --debug --flavor <flavorName>`
-#   - Troubleshooting: Check the logs from each step in the GitHub Actions run.
-#     Windows paths and environment variables might differ from Linux-based runners.
