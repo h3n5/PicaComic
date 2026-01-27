@@ -16,7 +16,7 @@ file = open('pubspec.yaml', 'a')
 file.write(fontUse)
 file.close()
 
-subprocess.run(["flutter", "build", "windows"], shell=True)
+subprocess.run(["flutter", "build", "windows", "--verbose"], shell=True)
 
 file = open('pubspec.yaml', 'w')
 file.write(content)
