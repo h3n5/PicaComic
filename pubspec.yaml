@@ -97,12 +97,12 @@ dependency_overrides:
     git:
       url: https://github.com/holzgeist/flutter_inappwebview
       path: flutter_inappwebview_android
-      ref: master
+      ref: 654ddbbc4c0417aaf7ccb2d8e3902c96f41b75fa
   flutter_inappwebview_platform_interface:
     git:
       url: https://github.com/holzgeist/flutter_inappwebview
       path: flutter_inappwebview_platform_interface
-      ref: master
+      ref: 654ddbbc4c0417aaf7ccb2d8e3902c96f41b75fa
 
 dev_dependencies:
   flutter_test:
