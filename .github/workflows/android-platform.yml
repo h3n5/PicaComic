@@ -26,8 +26,8 @@ jobs:
 
       - name: Install Android CMake
         run: |
-          # Use the sdkmanager to install the specific version required
-          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "cmake;3.10.2"
+          # The --include_obsolete flag allows the manager to find version 3.10.2
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "cmake;3.10.2" --include_obsolete
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
