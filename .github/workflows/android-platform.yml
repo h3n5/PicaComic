@@ -23,6 +23,27 @@ jobs:
           java-version: '17'
           distribution: 'temurin' # A popular distribution of OpenJDK
           cache: gradle # Cache Gradle dependencies
+          
+      - name: Manually Install and Link CMake 3.10.2
+        run: |
+          # 1. Download the Linux binaries
+          curl -L https://dl.google.com/android/repository/cmake-3.10.2-linux-x86_64.zip -o cmake.zip
+          
+          # 2. Extract
+          unzip -q cmake.zip
+          
+          # 3. Create the directory if it doesn't exist (using sudo for /usr/local)
+          sudo mkdir -p /usr/local/cmake-3.10.2
+          
+          # 4. Move extracted files
+          sudo mv cmake-3.10.2-linux-x86_64/* /usr/local/cmake-3.10.2/
+          
+          # 5. Create a symbolic link to /usr/local/bin/cmake
+          # This points the command the build is looking for to the binary we just downloaded
+          sudo ln -sf /usr/local/cmake-3.10.2/bin/cmake /usr/local/bin/cmake
+          
+          # 6. Verify installation
+          cmake --version
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
