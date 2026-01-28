@@ -26,23 +26,29 @@ jobs:
           
       - name: Manually Install and Link CMake 3.10.2
         run: |
-          # 1. Download the Linux binaries
+          # 1. Download
           curl -L https://dl.google.com/android/repository/cmake-3.10.2-linux-x86_64.zip -o cmake.zip
           
-          # 2. Extract
-          unzip -q cmake.zip
+          # 2. Extract into a specific temporary folder
+          mkdir -p cmake_temp
+          unzip -q cmake.zip -d cmake_temp
           
-          # 3. Create the directory if it doesn't exist (using sudo for /usr/local)
+          # 3. Find the extracted folder (it might be nested) and move it
+          # We use find to locate the 'bin' directory to be safe
+          EXTRACTED_PATH=$(find cmake_temp -name "bin" -type d | sed 's/\/bin//')
+          
           sudo mkdir -p /usr/local/cmake-3.10.2
+          sudo cp -r $EXTRACTED_PATH/* /usr/local/cmake-3.10.2/
           
-          # 4. Move extracted files
-          sudo mv cmake-3.10.2-linux-x86_64/* /usr/local/cmake-3.10.2/
-          
-          # 5. Create a symbolic link to /usr/local/bin/cmake
-          # This points the command the build is looking for to the binary we just downloaded
+          # 4. Create the symbolic link
           sudo ln -sf /usr/local/cmake-3.10.2/bin/cmake /usr/local/bin/cmake
+          sudo ln -sf /usr/local/cmake-3.10.2/bin/ninja /usr/local/bin/ninja
           
-          # 6. Verify installation
+          # 5. Make sure it's executable
+          sudo chmod +x /usr/local/bin/cmake
+          
+          # 6. Verify
+          echo "CMake location: $(which cmake)"
           cmake --version
 
       - name: Set up Flutter SDK
