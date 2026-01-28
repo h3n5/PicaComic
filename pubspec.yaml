@@ -79,7 +79,7 @@ dependencies:
       ref: 92b7309e
   collection: ^1.18.0
   window_manager:
-  flutter_inappwebview: 6.1.5
+  flutter_inappwebview: 6.1.1
   pdf: ^3.10.8
   flutter_qjs:
     git:
@@ -93,16 +93,8 @@ dependencies:
       path: packages/desktop_webview_window
 
 dependency_overrides:
-  flutter_inappwebview_android:
-    git:
-      url: https://github.com/holzgeist/flutter_inappwebview
-      path: flutter_inappwebview_android
-      ref: 654ddbbc4c0417aaf7ccb2d8e3902c96f41b75fa
-  flutter_inappwebview_platform_interface:
-    git:
-      url: https://github.com/holzgeist/flutter_inappwebview
-      path: flutter_inappwebview_platform_interface
-      ref: 654ddbbc4c0417aaf7ccb2d8e3902c96f41b75fa
+  flutter_inappwebview_platform_interface: ^1.1.0+1
+  flutter_inappwebview_android: ^1.1.0+3
 
 dev_dependencies:
   flutter_test:
