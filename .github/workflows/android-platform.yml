@@ -24,11 +24,6 @@ jobs:
           distribution: 'temurin' # A popular distribution of OpenJDK
           cache: gradle # Cache Gradle dependencies
 
-      - name: Install Android CMake
-        run: |
-          # The --include_obsolete flag allows the manager to find version 3.10.2
-          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "cmake;3.10.2" --include_obsolete
-
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
