@@ -28,6 +28,13 @@ def keystoreProperties = new Properties()
 // keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
+
+    externalNativeBuild {
+        cmake {
+            version "3.10.2"
+        }
+    }
+
     compileSdk 34
     ndkVersion flutter.ndkVersion
 
